@@ -20,21 +20,11 @@ def analyze_text(file_path: str) -> int:
 
 if __name__ == '__main__':
     
-    # czy to potrzebne? Chyba pool automatycznie użyje tylu rdzeni ilu się da
-    # processes is the number of worker processes to use. If processes is None then the number returned by os.process_cpu_count() is used.
-    # Enter a number of text files to read
-    # files_num: int = 4
-
-    # Check cores available
-    cores: int = mp.cpu_count()
-    print('Cores: ', cores)
-
-    # Set number of cores to be used
-    # cor_num: int = files_num if cores > files_num else cores
-
-
     with mp.Pool() as pool:
         results: list[int] = pool.map(analyze_text, ['text_1.txt', 'text_2.txt', 'text_3.txt', 'text_4.txt'])
+        # the with block would eventually call pool.terminate() if any exception occurs, but since we want to be sure our workers complete tasks we explicitly call close() and join()
+        pool.close()
+        pool.join()
 
     print(results)
     print('Sum of words: ', sum(results))
